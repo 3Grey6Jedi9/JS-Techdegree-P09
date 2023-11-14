@@ -29,6 +29,16 @@ sequelize.authenticate()
 
     });
 
+// Importing the User and Course models
+
+const User = require('./models/user');
+const Course = require('./models/course');
+
+// Associate the User and Course models
+
+User.hasMany(Course, {foreignKey: 'userId'});
+
+
 // create the Express app
 const app = express();
 
@@ -41,6 +51,18 @@ app.get('/', (req, res) => {
     message: 'Welcome to the REST API project!',
   });
 });
+
+// Retrieve users along with their associated courses
+app.get('/users', async (req, res)=>{
+
+  const users = await User.findAll({
+
+    include: [Course],
+  });
+
+res.json(users);
+});
+
 
 // send 404 if no other route matched
 app.use((req, res) => {
