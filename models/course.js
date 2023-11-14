@@ -1,5 +1,13 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
+const sequelize = new Sequelize({
+  storage: 'fsjstd-restapi.db',
+  dialect: 'sqlite',
+
+});
+
+const User = require('./user');
+
 const Course = sequelize.define('Course', {
   title: {
     type: DataTypes.STRING,
