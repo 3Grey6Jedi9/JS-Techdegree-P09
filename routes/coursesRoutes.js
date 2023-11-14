@@ -44,50 +44,98 @@ router.get('/api/courses/:id', async (req, res) => {
   }
 });
 
-// POST /api/courses - Create a new course
+
+
+// POST /api/courses - Create a new course with validation
 router.post('/api/courses', async (req, res) => {
-  // Implement course creation logic here
-  try {
-    const newCourse = await Course.create({
-      // Course data from req.body
-      title: req.body.title,
-      description: req.body.description,
-      // Other course properties...
-      userId: req.body.userId, // Assuming you have a userId associated with the course
-    });
-    // Set the Location header to the URI for the newly created course
-    res.location(`/api/courses/${newCourse.id}`);
-    // Return a 201 HTTP status code and no content
-    res.status(201).end();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'An error occurred during course creation' });
+  // Get the course data from the request body
+  const courseData = req.body;
+
+  // Create an array to store validation errors
+  const errors = [];
+
+  // Validate the required fields
+  if (!courseData.title) {
+    errors.push('Please provide a value for "title"');
+  }
+
+  if (!courseData.description) {
+    errors.push('Please provide a value for "description"');
+  }
+
+  // Check if there are any validation errors
+  if (errors.length > 0) {
+    // Return a 400 Bad Request status code with the validation errors
+    res.status(400).json({ errors });
+  } else {
+    // Implement course creation logic here if validation passes
+    try {
+      const newCourse = await Course.create({
+        title: courseData.title,
+        description: courseData.description,
+        // Other course properties...
+        userId: courseData.userId, // Assuming you have a userId associated with the course
+      });
+      // Set the Location header to the URI for the newly created course
+      res.location(`/api/courses/${newCourse.id}`);
+      // Return a 201 Created status code and no content
+      res.status(201).end();
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred during course creation' });
+    }
   }
 });
 
-// PUT /api/courses/:id - Update a specific course
+
+
+// PUT /api/courses/:id - Update a specific course with validation
 router.put('/api/courses/:id', async (req, res) => {
   const courseId = req.params.id;
-  // Implement course update logic here
-  try {
-    const course = await Course.findByPk(courseId);
-    if (!course) {
-      res.status(404).json({ message: 'Course not found' });
-    } else {
-      await course.update({
-        // Update course properties using req.body
-        title: req.body.title,
-        description: req.body.description,
-        // Other course properties...
-      });
-      // Return a 204 HTTP status code and no content
-      res.status(204).end();
+  // Get the course data from the request body
+  const courseData = req.body;
+
+  // Create an array to store validation errors
+  const errors = [];
+
+  // Validate the required fields
+  if (!courseData.title) {
+    errors.push('Please provide a value for "title"');
+  }
+
+  if (!courseData.description) {
+    errors.push('Please provide a value for "description"');
+  }
+
+  // Check if there are any validation errors
+  if (errors.length > 0) {
+    // Return a 400 Bad Request status code with the validation errors
+    res.status(400).json({ errors });
+  } else {
+    // Implement course update logic here if validation passes
+    try {
+      const course = await Course.findByPk(courseId);
+      if (!course) {
+        res.status(404).json({ message: 'Course not found' });
+      } else {
+        await course.update({
+          // Update course properties using req.body
+          title: courseData.title,
+          description: courseData.description,
+          // Other course properties...
+        });
+        // Return a 204 HTTP status code and no content
+        res.status(204).end();
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred during course update' });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'An error occurred during course update' });
   }
 });
+
+
+
 
 // DELETE /api/courses/:id - Delete a specific course
 router.delete('/api/courses/:id', async (req, res) => {

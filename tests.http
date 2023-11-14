@@ -4,16 +4,16 @@
 # Tests for the User Routes section of the rubric
 
 ### Get User (With Auth)
-GET http://localhost:5000/api/users HTTP/1.1
+GET http://localhost:5001/api/users HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 
 ### Create User
-POST http://localhost:5000/api/users HTTP/1.1
+POST http://localhost:5001/api/users HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 Content-Type: application/json
 
 {
-  "firstName": "John",
+  "firstName": "",
   "lastName": "Smith",
   "emailAddress": "john23@smith.com",
   "password": "password"

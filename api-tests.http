@@ -1,9 +1,0 @@
-### Request Description
-PUT http://localhost:5001/api/courses/1
-Content-Type: application/json
-
-{
-  "key": "value"
-}
-
-

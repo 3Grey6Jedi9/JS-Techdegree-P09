@@ -37,6 +37,30 @@ const Course = require('./models/course');
 // create the Express app
 const app = express();
 
+app.use(express.json()); // Middleware for parsing JSON request bodies
+
+// setup a global error handler
+app.use((err, req, res, next) => {
+  if (enableGlobalErrorLogging) {
+    console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
+  }
+
+  if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
+    // Handle Sequelize validation errors
+    const validationErrors = err.errors.map((error) => error.message);
+    res.status(400).json({ errors: validationErrors });
+  } else {
+    // Handle other errors with a 500 response
+    res.status(err.status || 500).json({
+      message: err.message,
+      error: {},
+    });
+  }
+});
+
+
+
+
 // Use the userRoutes
 app.use(userRoutes);
 app.use(coursesRoutes);
@@ -67,17 +91,10 @@ app.use((req, res) => {
   });
 });
 
-// setup a global error handler
-app.use((err, req, res, next) => {
-  if (enableGlobalErrorLogging) {
-    console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
-  }
 
-  res.status(err.status || 500).json({
-    message: err.message,
-    error: {},
-  });
-});
+
+
+
 
 // set our port
 app.set('port', process.env.PORT || 5001);
