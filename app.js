@@ -35,8 +35,9 @@ const User = require('./models/user');
 const Course = require('./models/course');
 
 // Associate the User and Course models
-
+Course.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Course, {foreignKey: 'userId'});
+
 
 
 // create the Express app

@@ -19,5 +19,7 @@ const User = sequelize.define('User', {
   },
 });
 
+User.hasMany(Course, { foreignKey: 'userId' });
+
 module.exports = User;
 

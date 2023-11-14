@@ -27,4 +27,6 @@ const Course = sequelize.define('Course', {
   },
 });
 
+Course.belongsTo(User, { foreignKey: 'userId' });
+
 module.exports = Course;
