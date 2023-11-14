@@ -3,42 +3,30 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const {Sequelize} = require("sequelize");
+const Sequelize = require('sequelize');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // creating the Sequelize database connection
-
 const sequelize = new Sequelize({
   storage: 'fsjstd-restapi.db',
   dialect: 'sqlite',
-
 });
 
 // Testing the database connection
-
-sequelize.authenticate()
-    .then(()=> {
-
-      console.log('Database connection successful!');
-
-    })
-    .catch((error)=>{
-      console.error('Database connection error:', error);
-
-    });
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Database connection successful!');
+  })
+  .catch((error) => {
+    console.error('Database connection error:', error);
+  });
 
 // Importing the User and Course models
-
 const User = require('./models/user');
 const Course = require('./models/course');
-
-// Associate the User and Course models
-Course.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Course, {foreignKey: 'userId'});
-
-
 
 // create the Express app
 const app = express();
@@ -54,16 +42,12 @@ app.get('/', (req, res) => {
 });
 
 // Retrieve users along with their associated courses
-app.get('/users', async (req, res)=>{
-
+app.get('/users', async (req, res) => {
   const users = await User.findAll({
-
     include: [Course],
   });
-
-res.json(users);
+  res.json(users);
 });
-
 
 // send 404 if no other route matched
 app.use((req, res) => {

@@ -1,9 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
 const sequelize = new Sequelize({
   storage: 'fsjstd-restapi.db',
   dialect: 'sqlite',
-
 });
 
 const User = require('./user');
@@ -25,16 +23,9 @@ const Course = sequelize.define('Course', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'User',
-      key: 'id',
-    },
-  },
 });
 
+// Define associations after both models are defined
 Course.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = Course;
