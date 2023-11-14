@@ -1,0 +1,9 @@
+### Request Description
+GET http://localhost:5001/api/endpoint
+Content-Type: application/json
+
+{
+  "key": "value"
+}
+
+
