@@ -13,7 +13,7 @@ Authorization: Basic joe@smith.com:joepassword
 Content-Type: application/json
 
 {
-  "firstName": "",
+  "firstName": "John",
   "lastName": "Smith",
   "emailAddress": "john23@smith.com",
   "password": "password"

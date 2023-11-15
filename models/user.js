@@ -1,4 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs')
+
 const sequelize = new Sequelize({
   storage: 'fsjstd-restapi.db',
   dialect: 'sqlite',
