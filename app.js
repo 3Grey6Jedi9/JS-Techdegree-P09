@@ -4,6 +4,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
+const authenticateUser = require('./auth'); // Import the authentication middleware
+
 
 // Import userRoutes
 const userRoutes = require('./routes/userRoutes');
@@ -37,6 +39,9 @@ const Course = require('./models/course');
 // create the Express app
 const app = express();
 
+// setup morgan which gives us http request logging
+app.use(morgan('dev'));
+
 app.use(express.json()); // Middleware for parsing JSON request bodies
 
 // setup a global error handler
@@ -60,14 +65,16 @@ app.use((err, req, res, next) => {
 
 
 
-
 // Use the userRoutes
 app.use(userRoutes);
 app.use(coursesRoutes);
 
 
-// setup morgan which gives us http request logging
-app.use(morgan('dev'));
+// Middleware for protecting routes that require authentication
+app.use('/api/users', authenticateUser); // Protect /api/users GET
+app.use('/api/courses', authenticateUser); // Protect /api/courses POST, PUT, DELETE
+
+
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
