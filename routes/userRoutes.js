@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs')
 
 // Import your User model or any required dependencies here
 const User = require('../models/user');
@@ -43,12 +44,15 @@ router.post('/api/users', (req, res) => {
     // Return a 400 Bad Request status code with the validation errors
     res.status(400).json({ errors });
   } else {
+    // Generate a hashed password using bcrypt
+    const hashedPassword = bcrypt.hashSync(userData.password, 10);
+    console.log(hashedPassword)
     // Implement user creation logic here if validation passes
     User.create({
       firstName: userData.firstName,
       lastName: userData.lastName,
       emailAddress: userData.emailAddress,
-      password: userData.password,
+      password: hashedPassword,
     })
       .then((user) => {
         // Set the Location header to the root route
