@@ -15,7 +15,7 @@ Content-Type: application/json
 {
   "firstName": "John",
   "lastName": "Smith",
-  "emailAddress": "john23@smith.com",
+  "emailAddress": "john234@smith.com",
   "password": "password"
 }
 
@@ -41,7 +41,7 @@ GET http://localhost:5000/api/courses HTTP/1.1
 GET http://localhost:5000/api/courses/1 HTTP/1.1
 
 ### Create Course (Minimum Data)
-POST http://localhost:5000/api/courses HTTP/1.1
+POST http://localhost:5001/api/courses HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 Content-Type: application/json
 
@@ -52,7 +52,7 @@ Content-Type: application/json
 }
 
 ### Update Course (Minimum Data)
-PUT http://localhost:5000/api/courses/1 HTTP/1.1
+PUT http://localhost:5001/api/courses/1 HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 Content-Type: application/json
 
