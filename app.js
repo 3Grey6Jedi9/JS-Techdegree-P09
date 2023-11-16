@@ -1,15 +1,17 @@
 'use strict';
 
-// load modules
+// loading modules
 const express = require('express');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
-const authenticateUser = require('./auth'); // Import the authentication middleware
+const authenticateUser = require('./auth'); // Importing the authentication middleware
 
 
-// Import userRoutes
+// Importing userRoutes
 const userRoutes = require('./routes/userRoutes');
-// Import coursesRoutes
+
+
+// Importing coursesRoutes
 const coursesRoutes = require('./routes/coursesRoutes');
 
 
@@ -22,6 +24,8 @@ const sequelize = new Sequelize({
   dialect: 'sqlite',
 });
 
+
+
 // Testing the database connection
 sequelize
   .authenticate()
@@ -32,19 +36,30 @@ sequelize
     console.error('Database connection error:', error);
   });
 
+
+
+
 // Importing the User and Course models
 const User = require('./models/user');
 const Course = require('./models/course');
 
-// create the Express app
+
+
+
+// Creating the Express app
 const app = express();
 
-// setup morgan which gives us http request logging
+// Setting up morgan which gives us http request logging
 app.use(morgan('dev'));
 
 app.use(express.json()); // Middleware for parsing JSON request bodies
 
-// setup a global error handler
+
+
+
+
+
+// setting up a global error handler
 app.use((err, req, res, next) => {
   if (enableGlobalErrorLogging) {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
@@ -65,9 +80,11 @@ app.use((err, req, res, next) => {
 
 
 
-// Use the userRoutes
+
+// Using the userRoutes
 app.use(userRoutes);
 app.use(coursesRoutes);
+
 
 
 // Middleware for protecting routes that require authentication
@@ -76,14 +93,17 @@ app.use('/api/courses', authenticateUser); // Protect /api/courses POST, PUT, DE
 
 
 
-// setup a friendly greeting for the root route
+// setting up a friendly greeting for the root route
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the REST API project!',
   });
 });
 
-// Retrieve users along with their associated courses
+
+
+
+// Retrieving users along with their associated courses
 app.get('/users', async (req, res) => {
   const users = await User.findAll({
     include: [Course],
@@ -91,7 +111,10 @@ app.get('/users', async (req, res) => {
   res.json(users);
 });
 
-// send 404 if no other route matched
+
+
+
+// sending 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
     message: 'Route Not Found',
@@ -102,8 +125,7 @@ app.use((req, res) => {
 
 
 
-
-// set our port
+// setting our port
 app.set('port', process.env.PORT || 5001);
 
 // start listening on our port
