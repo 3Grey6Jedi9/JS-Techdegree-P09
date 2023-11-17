@@ -5,7 +5,7 @@
 
 ### Get User (With Auth)
 GET http://localhost:5001/api/users HTTP/1.1
-Authorization: Basic joe@smith.com:joepassword
+Authorization: Basic john23@smith.com:password
 
 ### Create User
 POST http://localhost:5001/api/users HTTP/1.1
@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 
-# Tests for the Course Routes section of the rubric
+### Tests for the Course Routes section of the rubric
 
 ### Get Courses
 GET http://localhost:5001/api/courses HTTP/1.1
