@@ -12,6 +12,9 @@ const User = require('../models/user');
 router.get('/api/courses', async (req, res) => {
   try {
     const courses = await Course.findAll({
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'], // Exclude createdAt and updatedAt
+      },
       include: {
         model: User,
         attributes: ['id', 'firstName', 'lastName', 'emailAddress'],
@@ -23,6 +26,7 @@ router.get('/api/courses', async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching courses' });
   }
 });
+
 
 
 
