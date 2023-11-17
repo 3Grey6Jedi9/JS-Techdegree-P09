@@ -31,7 +31,7 @@ router.get('/api/users', (req, res) => {
 
 
 // POST /api/users - Create a new user with validation
-router.post('/api/users', (req, res) => {
+router.post('/api/users', async (req, res) => {
   // Get the user data from the request body
   const userData = req.body;
 
@@ -60,28 +60,35 @@ router.post('/api/users', (req, res) => {
     // Return a 400 Bad Request status code with the validation errors
     res.status(400).json({ errors });
   } else {
-    // Generate a hashed password using bcrypt
-    const hashedPassword = bcrypt.hashSync(userData.password, 10);
-    console.log(hashedPassword)
-    // Implement user creation logic here if validation passes
-    User.create({
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      emailAddress: userData.emailAddress,
-      password: hashedPassword,
-    })
-      .then((user) => {
-        // Set the Location header to the root route
-        res.location('/');
-        // Return a 201 Created status code and no content
-        res.status(201).end();
-      })
-      .catch((err) => {
-        // Handle any errors that occur during user creation
-        console.error(err);
-        res.status(500).json({ message: 'An error occurred during user creation' });
+    try {
+      // Generate a hashed password using bcrypt
+      const hashedPassword = bcrypt.hashSync(userData.password, 10);
+
+      // Implement user creation logic here if validation passes
+      await User.create({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        emailAddress: userData.emailAddress,
+        password: hashedPassword,
       });
+
+      // Set the Location header to the root route
+      res.location('/');
+      // Return a 201 Created status code and no content
+      res.status(201).end();
+    } catch (err) {
+      // Handle any errors that occur during user creation
+      console.error(err);
+      if (err.name === 'SequelizeUniqueConstraintError') {
+        // Return a 400 Bad Request status code with an error message for duplicate email
+        res.status(400).json({ message: 'Email address already in use!' });
+      } else {
+        // Handle other errors with a 500 response
+        res.status(500).json({ message: 'An error occurred during user creation' });
+      }
+    }
   }
 });
+
 
 module.exports = router;
