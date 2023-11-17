@@ -12,21 +12,26 @@ router.get('/api/users', (req, res) => {
   // You can access the authenticated user data using req.user (assuming you set up authentication middleware)
   const authenticatedUser = req.user;
 
-  // Check if the properties exist before attempting to delete them
-  if (authenticatedUser.hasOwnProperty('password')) {
-    delete authenticatedUser.password;
-  }
+  if (!authenticatedUser) {
+    res.status(401).json({ message: 'Access Denied' });
+  } else {
+    // Check if the properties exist before attempting to delete them
+    if (authenticatedUser.hasOwnProperty('password')) {
+      delete authenticatedUser.password;
+    }
 
-  if (authenticatedUser.hasOwnProperty('createdAt')) {
-    delete authenticatedUser.createdAt;
-  }
+    if (authenticatedUser.hasOwnProperty('createdAt')) {
+      delete authenticatedUser.createdAt;
+    }
 
-  if (authenticatedUser.hasOwnProperty('updatedAt')) {
-    delete authenticatedUser.updatedAt;
-  }
+    if (authenticatedUser.hasOwnProperty('updatedAt')) {
+      delete authenticatedUser.updatedAt;
+    }
 
-  res.status(200).json(authenticatedUser);
+    res.status(200).json(authenticatedUser);
+  }
 });
+
 
 
 
