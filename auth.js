@@ -3,12 +3,9 @@ const bcrypt = require('bcryptjs');
 const { User } = require('./models/user'); // Importing the User model here
 
 
-
-
 const authenticateUser = async (req, res, next) => {
   // Parsing the user's credentials from the Authorization header
   const credentials = auth(req);
-
   if (credentials) {
     const { name, pass } = credentials;
 

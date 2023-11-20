@@ -8,7 +8,7 @@ const User = require('../models/user');
 
 
 // GET /api/users - Return properties and values for the authenticated user
-router.get('/api/users', (req, res) => {
+router.get('/api/users',(req, res) => {
   // You can access the authenticated user data using req.user (assuming you set up authentication middleware)
   const authenticatedUser = req.user;
 
