@@ -36,6 +36,7 @@ router.get('/api/courses/:id', async (req, res) => {
   const courseId = req.params.id;
   try {
     const course = await Course.findByPk(courseId, {
+      attributes: { exclude: ['createdAt', 'updatedAt'] }, // Exclude these fields
       include: {
         model: User,
         attributes: ['id', 'firstName', 'lastName', 'emailAddress'],
