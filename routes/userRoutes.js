@@ -1,37 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs')
-
+const authenticateUser = require('../auth')
 // Import your User model or any required dependencies here
 const User = require('../models/user');
 
 
 
 // GET /api/users - Return properties and values for the authenticated user
-router.get('/api/users',(req, res) => {
-  // You can access the authenticated user data using req.user (assuming you set up authentication middleware)
-  const authenticatedUser = req.user;
+// Apply the authenticateUser middleware specifically to this route
+router.get('/api/users', authenticateUser, async (req, res) => {
+  try {
+    const authenticatedUser = req.currentUser;
 
-  if (!authenticatedUser) {
-    res.status(401).json({ message: 'Access Denied' });
-  } else {
-    // Check if the properties exist before attempting to delete them
-    if (authenticatedUser.hasOwnProperty('password')) {
-      delete authenticatedUser.password;
+    if (!authenticatedUser) {
+      return res.status(401).json({ message: 'Access Denied' });
     }
 
-    if (authenticatedUser.hasOwnProperty('createdAt')) {
-      delete authenticatedUser.createdAt;
-    }
+    // If authenticatedUser is a Sequelize model instance, convert to plain object
+    const userObj = authenticatedUser instanceof Sequelize.Model ? authenticatedUser.get({ plain: true }) : authenticatedUser;
 
-    if (authenticatedUser.hasOwnProperty('updatedAt')) {
-      delete authenticatedUser.updatedAt;
-    }
+    // Remove sensitive data
+    delete userObj.password;
+    delete userObj.createdAt;
+    delete userObj.updatedAt;
 
-    res.status(200).json(authenticatedUser);
+    res.status(200).json(userObj);
+  } catch (error) {
+    console.error('Error in GET /api/users:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 
 
 

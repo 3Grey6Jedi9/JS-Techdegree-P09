@@ -1,34 +1,31 @@
-const auth = require('basic-auth');
 const bcrypt = require('bcryptjs');
-const { User } = require('./models/user'); // Importing the User model here
-
+const User = require('./models/user'); // Adjust the path as needed
 
 const authenticateUser = async (req, res, next) => {
-  // Parsing the user's credentials from the Authorization header
-  const credentials = auth(req);
-  if (credentials) {
-    const { name, pass } = credentials;
+  const authHeader = req.headers.authorization;
 
-    // Finding the user by their email address
-    const user = await User.findOne({ where: { emailAddress: name } });
+  if (authHeader && authHeader.startsWith('Basic ')) {
+    // Extract the credentials part and split it by ':'
+    const base64Credentials = authHeader.slice(6);
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [email, password] = credentials.split(':');
 
-    // Checking if the user exists and if the password matches
-    if (user && bcrypt.compareSync(pass, user.password)) {
-      // If authentication is successful, we add the user to the request object
-      req.currentUser = user;
-      next(); // Continuing processing the request
-    } else {
-      // If authentication fails, we will return a 401 Unauthorized status
-      res.status(401).json({ message: 'Access Denied' });
+    try {
+      const user = await User.findOne({ where: { emailAddress: email } });
+
+      if (user && bcrypt.compareSync(password, user.password)) {
+        req.currentUser = user;
+        next(); // Continue processing the request
+      } else {
+        res.status(401).json({ message: 'Access Denied: Invalid Credentials' });
+      }
+    } catch (error) {
+      console.error('Error during authentication:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
     }
   } else {
-    // If no credentials are provided, we will return a 401 Unauthorized status
-    res.status(401).json({ message: 'Access Denied' });
+    res.status(401).json({ message: 'Access Denied: Credentials Not Provided' });
   }
 };
-
-
-
-
 
 module.exports = authenticateUser;
