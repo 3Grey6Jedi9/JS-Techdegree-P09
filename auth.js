@@ -5,10 +5,10 @@ const authenticateUser = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith('Basic ')) {
-    // Extract the credentials part and split it by ':'
-    const base64Credentials = authHeader.slice(6);
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [email, password] = credentials.split(':');
+    // Extract the credentials part
+    const credentialsPart = authHeader.slice(6);
+    // Splitting by ':' to separate email and password
+    const [email, password] = credentialsPart.split(':');
 
     try {
       const user = await User.findOne({ where: { emailAddress: email } });

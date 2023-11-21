@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const authenticateUser = require('../auth')
 // Import your User model or any required dependencies here
 const User = require('../models/user');
+const Sequelize = require('sequelize');
 
 
 
