@@ -68,14 +68,14 @@ DELETE http://localhost:5001/api/courses/4 HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 
 ### Update Course (Not Owner) - EXCEEDS
-PUT http://localhost:5001/api/courses/3 HTTP/1.1
+PUT http://localhost:5001/api/courses/2 HTTP/1.1
 Authorization: Basic joe@smith.com:joepassword
 Content-Type: application/json
 
 {
-	"id": 3,
-  "title": "Updated course!",
-  "description": "The course description has been updated as well.",
+	"id": 2,
+  "title": "Learn How to Program",
+  "description": "In this course, you'll learn how to write code like a pro!",
   "userId": 1
 }
 

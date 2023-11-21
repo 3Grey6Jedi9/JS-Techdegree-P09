@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const authenticateUser = require('../auth')
 
 // Importing the Course and User models and any other required dependencies here
 const Course = require('../models/course');
@@ -103,15 +103,11 @@ router.post('/api/courses', async (req, res) => {
 
 
 // PUT /api/courses/:id - Updating a specific course with validation
-router.put('/api/courses/:id', async (req, res) => {
+router.put('/api/courses/:id', authenticateUser, async (req, res) => {
   const courseId = req.params.id;
-  // Getting the course data from the request body
   const courseData = req.body;
-
-  // Creating an array to store validation errors
   const errors = [];
 
-  // Validating the required fields
   if (!courseData.title) {
     errors.push('Please provide a value for "title"');
   }
@@ -120,23 +116,20 @@ router.put('/api/courses/:id', async (req, res) => {
     errors.push('Please provide a value for "description"');
   }
 
-  // Checking if there are any validation errors
   if (errors.length > 0) {
-    // Returning a 400 Bad Request status code with the validation errors
     res.status(400).json({ errors });
   } else {
-    // Implementing course update logic here if validation passes
     try {
       const course = await Course.findByPk(courseId);
       if (!course) {
         res.status(404).json({ message: 'Course not found' });
+      } else if (course.userId !== req.currentUser.id) { // Check if the current user is the owner of the course
+        res.status(403).json({ message: 'Forbidden: User is not the owner of the course' });
       } else {
         await course.update({
-          // Updating course properties using req.body
           title: courseData.title,
           description: courseData.description,
         });
-        // Returning a 204 HTTP status code and no content
         res.status(204).end();
       }
     } catch (error) {
@@ -148,18 +141,17 @@ router.put('/api/courses/:id', async (req, res) => {
 
 
 
-
 // DELETE /api/courses/:id - Deleting a specific course
-router.delete('/api/courses/:id', async (req, res) => {
+router.delete('/api/courses/:id', authenticateUser, async (req, res) => {
   const courseId = req.params.id;
-  // Implementing course deletion logic here
   try {
     const course = await Course.findByPk(courseId);
     if (!course) {
       res.status(404).json({ message: 'Course not found' });
+    } else if (course.userId !== req.currentUser.id) { // Check if the current user is the owner of the course
+      res.status(403).json({ message: 'Forbidden: User is not the owner of the course' });
     } else {
       await course.destroy();
-      // Returning a 204 HTTP status code and no content
       res.status(204).end();
     }
   } catch (error) {
