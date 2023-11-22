@@ -36,7 +36,7 @@ router.get('/api/courses/:id', async (req, res) => {
   const courseId = req.params.id;
   try {
     const course = await Course.findByPk(courseId, {
-      attributes: { exclude: ['createdAt', 'updatedAt'] }, // Exclude these fields
+      attributes: { exclude: ['createdAt', 'updatedAt'] }, // Excluding these fields
       include: {
         model: User,
         attributes: ['id', 'firstName', 'lastName', 'emailAddress'],
@@ -123,7 +123,7 @@ router.put('/api/courses/:id', authenticateUser, async (req, res) => {
       const course = await Course.findByPk(courseId);
       if (!course) {
         res.status(404).json({ message: 'Course not found' });
-      } else if (course.userId !== req.currentUser.id) { // Check if the current user is the owner of the course
+      } else if (course.userId !== req.currentUser.id) { // Checking if the current user is the owner of the course
         res.status(403).json({ message: 'Forbidden: User is not the owner of the course' });
       } else {
         await course.update({

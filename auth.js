@@ -1,11 +1,17 @@
 const bcrypt = require('bcryptjs');
-const User = require('./models/user'); // Adjust the path as needed
+const User = require('./models/user');
 
+
+
+
+/* This is an asynchronous function that takes three parameters: req, res and next. The req parameter is an object
+that contains information about the incoming request, the res parameter is an object that is used to send responses to the
+client and the next parameter is a function that is called to continue processing the request */
 const authenticateUser = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization; // Retrieving the authorization header from the req object.
 
   if (authHeader && authHeader.startsWith('Basic ')) {
-    // Extract the credentials part
+    // Extracting the credentials part
     const credentialsPart = authHeader.slice(6);
     // Splitting by ':' to separate email and password
     const [email, password] = credentialsPart.split(':');
