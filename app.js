@@ -3,7 +3,7 @@
 // loading modules
 const express = require('express');
 const morgan = require('morgan');
-const Sequelize = require('sequelize');
+const sequelize = require('./database'); // Import centralized Sequelize instance
 const authenticateUser = require('./auth'); // Importing the authentication middleware
 
 
@@ -18,13 +18,6 @@ const coursesRoutes = require('./routes/coursesRoutes');
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
-// creating the Sequelize database connection
-const sequelize = new Sequelize({
-  storage: 'fsjstd-restapi.db',
-  dialect: 'sqlite',
-});
-
-
 
 // Testing the database connection
 sequelize
@@ -37,12 +30,23 @@ sequelize
   });
 
 
+sequelize.sync({ force: false }).then(() => {
+  console.log('Database synchronized');
+}).catch(error => {
+  console.error('Failed to synchronize database:', error);
+});
+
+
 
 
 // Importing the User and Course models
 const User = require('./models/user');
 const Course = require('./models/course');
 
+
+// Define associations
+User.hasMany(Course, { foreignKey: 'userId' });
+Course.belongsTo(User, { foreignKey: 'userId' });
 
 
 

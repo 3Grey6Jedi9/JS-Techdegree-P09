@@ -58,7 +58,7 @@ router.get('/api/courses/:id', async (req, res) => {
 
 
 // POST /api/courses - Creating a new course with validation
-router.post('/api/courses', async (req, res) => {
+router.post('/api/courses', authenticateUser, async (req, res) => {
   // Getting the course data from the request body
   const courseData = req.body;
 

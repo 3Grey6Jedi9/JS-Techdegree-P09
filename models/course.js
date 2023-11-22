@@ -1,14 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
-
-// Creating a Sequelize instance
-const sequelize = new Sequelize({
-  storage: 'fsjstd-restapi.db',
-  dialect: 'sqlite',
-});
-
-
 const User = require('./user');
+const sequelize = require('../database')
+
+
 
 
 // Defining the Course Sequelize model
@@ -23,17 +17,15 @@ const Course = sequelize.define('Course', {
   },
   estimatedTime: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   materialsNeeded: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 });
 
 
 
-// Defining associations after both models are defined
-Course.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = Course;
