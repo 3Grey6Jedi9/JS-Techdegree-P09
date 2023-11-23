@@ -45,8 +45,8 @@ const Course = require('./models/course');
 
 
 // Define associations
-User.hasMany(Course, { foreignKey: 'userId' });
 Course.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Course, { foreignKey: 'userId' });
 
 
 
