@@ -22,6 +22,7 @@ const authenticateUser = async (req, res, next) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         req.currentUser = user;
         next(); // Continue processing the request
+        console.log(req.currentUser)
       } else {
         res.status(401).json({ message: 'Access Denied: Invalid Credentials' });
       }
