@@ -1,28 +1,17 @@
 const bcrypt = require('bcryptjs');
 const User = require('./models/user');
+const auth = require('basic-auth'); // Require basic-auth
 
-
-
-
-/* This is an asynchronous function that takes three parameters: req, res and next. The req parameter is an object
-that contains information about the incoming request, the res parameter is an object that is used to send responses to the
-client and the next parameter is a function that is called to continue processing the request */
 const authenticateUser = async (req, res, next) => {
-  const authHeader = req.headers.authorization; // Retrieving the authorization header from the req object.
+  const credentials = auth(req); // Using basic-auth to parse the credentials
 
-  if (authHeader && authHeader.startsWith('Basic ')) {
-    // Extracting the credentials part
-    const credentialsPart = authHeader.slice(6);
-    // Splitting by ':' to separate email and password
-    const [email, password] = credentialsPart.split(':');
-
+  if (credentials) {
     try {
-      const user = await User.findOne({ where: { emailAddress: email } });
+      const user = await User.findOne({ where: { emailAddress: credentials.name } });
 
-      if (user && bcrypt.compareSync(password, user.password)) {
+      if (user && bcrypt.compareSync(credentials.pass, user.password)) {
         req.currentUser = user;
         next(); // Continue processing the request
-        console.log(req.currentUser)
       } else {
         res.status(401).json({ message: 'Access Denied: Invalid Credentials' });
       }
